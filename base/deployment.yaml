@@ -51,5 +51,6 @@ spec:
         - name: prometheus-config-volume
           configMap:
             name: prometheus-server-config
+            defaultMode: 420
         - name: prometheus-storage-tsdb-volume
-          emptyDir: {} # kustomize: development - emptyDir, staging, production - persistent disk
+          emptyDir: {}
