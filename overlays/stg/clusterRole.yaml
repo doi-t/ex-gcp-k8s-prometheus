@@ -1,0 +1,9 @@
+# NOTE: This patch is not necessary after merging https://github.com/kubernetes-sigs/kustomize/pull/166
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: ex-gcp-k8s-prometheus
+subjects:
+- kind: ServiceAccount
+  name: ex-gcp-k8s-prometheus
+  namespace: stg-monitoring

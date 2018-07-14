@@ -10,21 +10,29 @@ Ref. https://cloud.google.com/kubernetes-engine/docs/how-to/role-based-access-co
 TODO: make it yaml configuration if it is possible.
 
 ## Deploy Promethus Server to GKE
-### Deploy an Environment
+### Deploy Development Environment
 ```
 ikustomize build overlays/dev | kubectl apply -f -
+```
+### Deploy Staging Environment
+```
+ikustomize build overlays/stg | kubectl apply -f -
 ```
 
 ## Debugging and Understanding What is Happening on k8s/GKE
 The following commands sometimes expect `NAMESPACE` and `ENVIRONMENT` variables.
 
-### development environment
+### Development Environment
 - `NAMESPACE=dev-monitoring`
 - `ENVIRONMENT=development`
 
+### Staging Environment
+- `NAMESPACE=stg-monitoring`
+- `ENVIRONMENT=staging`
+
 ## Check Rsources
 ```
-kubectl get pods,deployments,services,configmaps,namespaces,serviceaccount --show-labels --namespace ${NAMESPACE}
+kubectl get pods,deployments,services,configmaps,persistentvolumeclaim,storageclass,namespaces,serviceaccount --show-labels --namespace ${NAMESPACE}
 ```
 
 ## Enjoy Observing Rolling Update during the Deployment

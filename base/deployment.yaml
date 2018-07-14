@@ -53,4 +53,8 @@ spec:
             name: prometheus-server-config
             defaultMode: 420
         - name: prometheus-storage-tsdb-volume
-          emptyDir: {}
+          # NOTE: Depends on environment
+      securityContext: # To avoid "open /prometheus/lock: permission denied"
+        fsGroup: 2000
+        runAsNonRoot: true
+        runAsUser: 1000
