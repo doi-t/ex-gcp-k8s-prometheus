@@ -26,6 +26,12 @@ kubectl port-forward ${PROM_SERVER_POD_NAME} 9090:9090 --namespace monitoring
 kustomize build base | kubectl apply -f -
 ```
 
+### Enjoy Observing Rolling Update during the Deployment
+Run the following command before `kubectl apply` to observe how kubernetes detects new configurations and does rolling update ([Thanks to kustomize](https://github.com/kubernetes-sigs/kustomize/tree/master/examples/helloWorld#rolling-updates)).
+```
+watch -n 5 'kubectl get pods,deployments,configmaps --show-labels --namespace monitoring'
+```
+
 ## Check Rsources
 ```
 kubectl get pods,deployments,services,configmaps,namespaces,serviceaccount --show-labels --namespace monitoring
