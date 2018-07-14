@@ -1,0 +1,16 @@
+namespace: stg-monitoring
+namePrefix: stg-
+commonLabels:
+  variant: staging
+bases:
+- ../../base
+patches:
+- deployment.yaml
+- clusterRole.yaml
+resources:
+- volume.yaml
+configMapGenerator:
+- name: prometheus-server-config
+  behavior: merge
+  literals:
+    - tsdbRetention=48h

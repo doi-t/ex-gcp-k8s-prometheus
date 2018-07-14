@@ -8,9 +8,10 @@ spec:
       containers:
       - name: prometheus
         resources:
-          limits: # If the node is g1-small and limit requests are too low, the pod status becomes 'OOMKilled'.
+          limits:
             cpu: 150m
             memory: 150Mi
       volumes:
         - name: prometheus-storage-tsdb-volume
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: prometheus-tsdb-storage
