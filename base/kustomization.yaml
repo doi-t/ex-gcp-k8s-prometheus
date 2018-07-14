@@ -1,0 +1,13 @@
+namespace: monitoring
+commonLabels:
+  name: prometheus
+resources:
+- deployment.yaml
+- configmap.yaml
+- namespace.yaml
+- clusterRole.yaml
+configMapGenerator:
+- name: prometheus-server-config
+  behavior: merge
+  literals:
+    - tsdbRetention=24h

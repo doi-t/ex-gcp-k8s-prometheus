@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+spec:
+  template:
+    spec:
+      containers:
+      - name: prometheus
+        resources:
+          limits: # If the node is g1-small and limit requests are too low, the pod status becomes 'OOMKilled'.
+            cpu: 150m
+            memory: 150Mi
