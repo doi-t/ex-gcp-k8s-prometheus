@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: monitoring
+  labels:
+    name: prometheus # kustomize: this can be commonLabels
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: prometheus
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: prometheus
+      annotations:
+    spec:
+      containers:
+      - name: prometheus
+        image: prom/prometheus:v2.3.2
+        imagePullPolicy: Always
+        args:
+        - "--config.file=/etc/prometheus/prometheus.yaml"
+        - "--storage.tsdb.path=/prometheus/"
+        - "--web.enable-lifecycle"
+        - "--storage.tsdb.retention=24h" # kustomize: staging should be shorter than production
+        ports:
+        - containerPort: 9090
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 150m
+            memory: 150Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - name: prometheus-config-volume
+          mountPath: /etc/prometheus
+          readOnly: true
+        - name: prometheus-storage-tsdb-volume
+          mountPath: /prometheus
+      volumes:
+        - name: prometheus-config-volume
+          configMap:
+            name: prometheus-server-config
+        - name: prometheus-storage-tsdb-volume
+          emptyDir: {} # kustomize: development - emptyDir, staging, production - persistent disk
