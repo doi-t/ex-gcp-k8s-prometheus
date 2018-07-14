@@ -17,8 +17,13 @@ Ref. https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-
 
 ## Access Promethus Dashboard
 ```
-PROM_SERVER_POD_NAME=$(kubectl get pods --namespace monitoring -l "name=prometheus" -o jsonpath="{.items[0].metadata.name}")
+PROM_SERVER_POD_NAME=$(kubectl get pods --namespace monitoring -l "name=prometheus" -o jsonpath="{.items[0].metadata.name}"); \
 kubectl port-forward ${PROM_SERVER_POD_NAME} 9090:9090 --namespace monitoring
+```
+
+## Deploy Promethus Server to GKE
+```
+kustomize build base | kubectl apply -f -
 ```
 
 ## Check Rsources
