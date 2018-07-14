@@ -2,9 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: prometheus
-  namespace: monitoring
-  labels:
-    name: prometheus # kustomize: this can be commonLabels
 spec:
   replicas: 1
   selector:
@@ -27,14 +24,20 @@ spec:
         - "--config.file=/etc/prometheus/prometheus.yaml"
         - "--storage.tsdb.path=/prometheus/"
         - "--web.enable-lifecycle"
-        - "--storage.tsdb.retention=24h" # kustomize: staging should be shorter than production
+        - "--storage.tsdb.retention=$(TSDB_RETENTION)"
         ports:
         - containerPort: 9090
           protocol: TCP
+        env:
+        - name: TSDB_RETENTION
+          valueFrom:
+            configMapKeyRef:
+              name: prometheus-server-config
+              key: tsdbRetention
         resources:
           limits:
-            cpu: 150m
-            memory: 150Mi
+            cpu: 100m
+            memory: 100Mi
           requests:
             cpu: 100m
             memory: 100Mi
