@@ -44,18 +44,20 @@ watch -n 5 'kubectl get pods,deployments,services,configmaps,persistentvolumecla
 
 MEMO: Recreating Prometheus server pod with rolling update for every single config update would cause "holes" in time series metrics as a discussion in https://github.com/kubernetes-sigs/kustomize/issues/50.
 
-### Access Promethus Dashboard
+### Access Promethus/Alertmanager Dashboard
 ```
-PROM_SERVER_POD_NAME=$(kubectl get pods --namespace ${NAMESPACE} -l "name=prometheus,variant=${ENVIRONMENT}" -o jsonpath="{.items[0].metadata.name}") && \
-echo $PROM_SERVER_POD_NAME && \
-kubectl port-forward ${PROM_SERVER_POD_NAME} 9090:9090 --namespace ${NAMESPACE}
+PROMETHEUS_POD_NAME=$(kubectl get pods --namespace ${NAMESPACE} -l "name=prometheus,variant=${ENVIRONMENT}" -o jsonpath="{.items[0].metadata.name}") && \
+echo $PROMETHEUS_POD_NAME
 ```
 
-### Access Alertmanager Dashboard
+#### Prometheus
 ```
-ALERTMANAGER_POD_NAME=$(kubectl get pods --namespace ${NAMESPACE} -l "name=alertmanager,variant=${ENVIRONMENT}" -o jsonpath="{.items[0].metadata.name}") && \
-echo $ALERTMANAGER_POD_NAME && \
-kubectl port-forward ${ALERTMANAGER_POD_NAME} 9093:9093 --namespace ${NAMESPACE}
+kubectl port-forward ${PROMETHEUS_POD_NAME} 9090:9090 --namespace ${NAMESPACE}
+```
+
+#### Alertmanager
+```
+kubectl port-forward ${PROMETHEUS_POD_NAME} 9093:9093 --namespace ${NAMESPACE}
 ```
 
 ### Check Prometheus Server Logs
