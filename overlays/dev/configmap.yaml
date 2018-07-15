@@ -1,51 +1,24 @@
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: prometheus-rule-config
-  labels:
-    name: prometheus-rule-config
-data:
-  prometheus-rules.yaml: |-
-    groups:
-    - name: InstanceDown
-      rules:
-      - alert: InstanceDown
-        expr: up == 0
-        for: 1m
-    - name: InstanceUp
-      rules:
-      - alert: InstanceUp
-        expr: up == 1
-        for: 1m
-    - name: ScrapeDuration
-      rules:
-      - alert: ScrapeDuration
-        expr: scrape_duration_seconds > 0.55
-        for: 1m
----
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: prometheus-server-config
-  labels:
-    name: prometheus-server-config
 data:
   prometheus.yaml: |-
     global:
-      scrape_interval: 15s
-      evaluation_interval: 15s
+      scrape_interval: 2m
+      evaluation_interval: 2m
       external_labels:
-        env: base
+        env: development
 
     rule_files:
       - /etc/prometheus/rules/*.yaml
 
     alerting:
       alertmanagers:
+      - scheme: http
       - static_configs:
         - targets:
-           - alertmanager.monitoring.svc.cluster.local:9093
+          - dev-alertmanager.dev-monitoring.svc.cluster.local:9093
 
     # Ref. https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml
     scrape_configs:

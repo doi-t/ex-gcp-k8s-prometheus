@@ -18,15 +18,18 @@ spec:
       serviceAccountName: ex-gcp-k8s-prometheus
       containers:
       - name: prometheus
-        image: prom/prometheus:v2.3.2
+        image: prom/prometheus:latest
         imagePullPolicy: Always
         args:
         - "--config.file=/etc/prometheus/prometheus.yaml"
         - "--storage.tsdb.path=/prometheus/"
         - "--web.enable-lifecycle"
         - "--storage.tsdb.retention=$(TSDB_RETENTION)"
+        - "--alertmanager.timeout=30s"
+        - "--log.level=debug"
         ports:
-        - containerPort: 9090
+        - name: prometheus
+          containerPort: 9090
           protocol: TCP
         env:
         - name: TSDB_RETENTION
@@ -42,15 +45,22 @@ spec:
             cpu: 100m
             memory: 100Mi
         volumeMounts:
-        - name: prometheus-config-volume
+        - name: prometheus-server-config
           mountPath: /etc/prometheus
+          readOnly: true
+        - name: prometheus-rule-config
+          mountPath: /etc/prometheus/rules
           readOnly: true
         - name: prometheus-storage-tsdb-volume
           mountPath: /prometheus
       volumes:
-        - name: prometheus-config-volume
+        - name: prometheus-server-config
           configMap:
             name: prometheus-server-config
+            defaultMode: 420
+        - name: prometheus-rule-config
+          configMap:
+            name: prometheus-rule-config
             defaultMode: 420
         - name: prometheus-storage-tsdb-volume
           # NOTE: Depends on environment

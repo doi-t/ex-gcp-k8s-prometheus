@@ -36,17 +36,26 @@ The following commands sometimes expect `NAMESPACE` and `ENVIRONMENT` variables.
 kubectl get pods,deployments,services,configmaps,persistentvolumeclaim,storageclass,namespaces,serviceaccount --show-labels --namespace ${NAMESPACE}
 ```
 
-### Enjoy Observing Rolling Update during the Deployment
-Run the following command before `kubectl apply` to observe how kubernetes detects new configurations and does rolling update ([Thanks to kustomize](https://github.com/kubernetes-sigs/kustomize/tree/master/examples/helloWorld#rolling-updates)).
+### Observe Rolling Update during the Deployment
+Run the following command before `kubectl apply` to observe how kubernetes detects new configurations and does [rolling update](https://github.com/kubernetes-sigs/kustomize/tree/master/examples/helloWorld#rolling-updates)).
 ```
-watch -n 5 'kubectl get pods,deployments,configmaps --show-labels --namespace ${NAMESPACE}'
+watch -n 5 'kubectl get pods,deployments,services,configmaps,persistentvolumeclaim,storageclass,namespaces,serviceaccount --show-labels --namespace dev-monitoring'
 ```
+
+MEMO: Recreating Prometheus server pod with rolling update for every single config update would cause "holes" in time series metrics as a discussion in https://github.com/kubernetes-sigs/kustomize/issues/50.
 
 ### Access Promethus Dashboard
 ```
-PROM_SERVER_POD_NAME=$(kubectl get pods --namespace ${NAMESPACE} -l "name=prometheus" -l "variant=${ENVIRONMENT}" -o jsonpath="{.items[0].metadata.name}") && \
+PROM_SERVER_POD_NAME=$(kubectl get pods --namespace ${NAMESPACE} -l "name=prometheus,variant=${ENVIRONMENT}" -o jsonpath="{.items[0].metadata.name}") && \
 echo $PROM_SERVER_POD_NAME && \
 kubectl port-forward ${PROM_SERVER_POD_NAME} 9090:9090 --namespace ${NAMESPACE}
+```
+
+### Access Alertmanager Dashboard
+```
+ALERTMANAGER_POD_NAME=$(kubectl get pods --namespace ${NAMESPACE} -l "name=alertmanager,variant=${ENVIRONMENT}" -o jsonpath="{.items[0].metadata.name}") && \
+echo $ALERTMANAGER_POD_NAME && \
+kubectl port-forward ${ALERTMANAGER_POD_NAME} 9093:9093 --namespace ${NAMESPACE}
 ```
 
 ### Check Prometheus Server Logs
