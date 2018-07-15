@@ -13,11 +13,6 @@ data:
       - alert: InstanceDown
         expr: up == 0
         for: 1m
-    - name: InstanceUp # TODO: remove
-      rules:
-      - alert: InstanceUp
-        expr: up == 1
-        for: 1m
 ---
 apiVersion: v1
 kind: ConfigMap
