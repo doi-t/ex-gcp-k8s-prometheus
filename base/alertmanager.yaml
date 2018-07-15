@@ -1,59 +1,3 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: alertmanager
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      name: alertmanager
-  strategy:
-    type: RollingUpdate
-  template:
-    metadata:
-      labels:
-        name: alertmanager
-      annotations:
-    spec:
-      containers:
-      - name: alertmanager
-        image: prom/alertmanager:latest
-        imagePullPolicy: Always
-        args:
-        - "--config.file=/etc/alertmanager/alertmanager.yaml"
-        - "--storage.path=/alertmanager/"
-        - "--data.retention=$(DATA_RETENTION)"
-        # - "-web.external-url=WEB.EXTERNAL-URL"
-        ports:
-        - name: alertmanager
-          containerPort: 9093
-          protocol: TCP
-        env:
-        - name: DATA_RETENTION
-          valueFrom:
-            configMapKeyRef:
-              name: alertmanager-config
-              key: dataRetention
-        resources:
-          limits:
-            cpu: 100m
-            memory: 100Mi
-          requests:
-            cpu: 100m
-            memory: 100Mi
-        volumeMounts:
-        - name: alertmanager-config
-          mountPath: /etc/alertmanager
-          readOnly: true
-        - name: alertmanager-storage-data-volume
-          mountPath: /alertmanager
-      volumes:
-        - name: alertmanager-config
-          configMap:
-            name: alertmanager-config
-            defaultMode: 420
-        - name: alertmanager-storage-data-volume
-          emptyDir: {}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -74,3 +18,60 @@ data:
       slack_configs:
       - channel: '#test'
         text: 'test alert from local: {{ .GroupLabels.app }}, {{ .GroupLabels.alertname }}'
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: alertmanager
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       name: alertmanager
+#   strategy:
+#     type: RollingUpdate
+#   template:
+#     metadata:
+#       labels:
+#         name: alertmanager
+#       annotations:
+#     spec:
+#       containers:
+#       - name: alertmanager
+#         image: prom/alertmanager:latest
+#         imagePullPolicy: Always
+#         args:
+#         - "--config.file=/etc/alertmanager/alertmanager.yaml"
+#         - "--storage.path=/alertmanager/"
+#         - "--data.retention=$(DATA_RETENTION)"
+#         # - "-web.external-url=WEB.EXTERNAL-URL"
+#         ports:
+#         - name: alertmanager
+#           containerPort: 9093
+#           protocol: TCP
+#         env:
+#         - name: DATA_RETENTION
+#           valueFrom:
+#             configMapKeyRef:
+#               name: alertmanager-config
+#               key: dataRetention
+#         resources:
+#           limits:
+#             cpu: 100m
+#             memory: 100Mi
+#           requests:
+#             cpu: 100m
+#             memory: 100Mi
+#         volumeMounts:
+#         - name: alertmanager-config
+#           mountPath: /etc/alertmanager
+#           readOnly: true
+#         - name: alertmanager-storage-data-volume
+#           mountPath: /alertmanager
+#       volumes:
+#         - name: alertmanager-config
+#           configMap:
+#             name: alertmanager-config
+#             defaultMode: 420
+#         - name: alertmanager-storage-data-volume
+#           emptyDir: {}

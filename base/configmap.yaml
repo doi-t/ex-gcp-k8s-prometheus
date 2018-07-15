@@ -13,15 +13,10 @@ data:
       - alert: InstanceDown
         expr: up == 0
         for: 1m
-    - name: InstanceUp
+    - name: InstanceUp # TODO: remove
       rules:
       - alert: InstanceUp
         expr: up == 1
-        for: 1m
-    - name: ScrapeDuration
-      rules:
-      - alert: ScrapeDuration
-        expr: scrape_duration_seconds > 0.55
         for: 1m
 ---
 apiVersion: v1
@@ -36,7 +31,7 @@ data:
       scrape_interval: 15s
       evaluation_interval: 15s
       external_labels:
-        env: base
+        env: base # TODO: kustomize: patch it in each overlay
 
     rule_files:
       - /etc/prometheus/rules/*.yaml
@@ -45,7 +40,7 @@ data:
       alertmanagers:
       - static_configs:
         - targets:
-           - alertmanager.monitoring.svc.cluster.local:9093
+          - localhost:9093 # TODO: kustomize: patch fqdn with [pod name].[namespace].svc.cluster.local:9093 in each overlay
 
     # Ref. https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml
     scrape_configs:
