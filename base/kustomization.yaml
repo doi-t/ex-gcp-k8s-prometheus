@@ -1,13 +1,20 @@
 namespace: monitoring
 commonLabels:
-  name: prometheus
+  app: monitoring
 resources:
 - deployment.yaml
+- service.yaml
 - configmap.yaml
 - namespace.yaml
 - clusterRole.yaml
+- alertmanager.yaml
+# - alertmanager-service.yaml
 configMapGenerator:
 - name: prometheus-server-config
   behavior: merge
   literals:
     - tsdbRetention=24h
+- name: alertmanager-config
+  behavior: merge
+  literals:
+    - dataRetention=24h

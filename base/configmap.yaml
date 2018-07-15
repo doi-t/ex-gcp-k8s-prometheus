@@ -1,3 +1,19 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-rule-config
+  labels:
+    name: prometheus-rule-config
+data:
+  prometheus-rules.yaml: |-
+    groups:
+    - name: InstanceDown
+      rules:
+      - alert: InstanceDown
+        expr: up == 0
+        for: 1m
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,7 +26,16 @@ data:
       scrape_interval: 15s
       evaluation_interval: 15s
       external_labels:
-        monitor: "ex-gcp-k8s-prometheus"
+        env: base # TODO: kustomize: patch it in each overlay
+
+    rule_files:
+      - /etc/prometheus/rules/*.yaml
+
+    alerting:
+      alertmanagers:
+      - static_configs:
+        - targets:
+          - localhost:9093 # TODO: kustomize: patch fqdn with [pod name].[namespace].svc.cluster.local:9093 in each overlay
 
     # Ref. https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml
     scrape_configs:
