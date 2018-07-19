@@ -9,7 +9,7 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: stg-prometheus-storage-class # kustomize does not supplies prefix.
+  storageClassName: staging-prometheus-storage-class # kustomize does not supplies prefix.
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass

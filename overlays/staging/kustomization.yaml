@@ -1,14 +1,15 @@
-namespace: stg-monitoring
-namePrefix: stg-
+namespace: staging-monitoring
+namePrefix: staging-
 commonLabels:
   variant: staging
 bases:
 - ../../base
 patches:
-- deployment.yaml
-- clusterRole.yaml
+- prometheus/deployment.yaml
+- prometheus/configmap.yaml
+- prometheus/clusterRole.yaml
 resources:
-- volume.yaml
+- prometheus/volume.yaml
 configMapGenerator:
 - name: prometheus-server-config
   behavior: merge

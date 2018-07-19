@@ -6,4 +6,4 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: ex-gcp-k8s-prometheus
-  namespace: dev-monitoring
+  namespace: development-monitoring

@@ -1,0 +1,17 @@
+namespace: development-monitoring
+namePrefix: development-
+commonLabels:
+  variant: development
+bases:
+- ../../base
+patches:
+- prometheus/deployment.yaml
+- prometheus/service.yaml
+- prometheus/configmap.yaml
+- prometheus/clusterRole.yaml
+- alertmanager/service.yaml
+configMapGenerator:
+- name: prometheus-server-config
+  behavior: merge
+  literals:
+    - tsdbRetention=12h
