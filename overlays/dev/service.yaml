@@ -6,10 +6,7 @@ metadata:
     name: prometheus
 spec:
   ports:
+  - port: 9090
+    $patch: delete
   - name: http
-    port: 9090
-    protocol: TCP
-    targetPort: 9090
-  selector:
-    name: prometheus
-  type: ClusterIP
+    port: 3000

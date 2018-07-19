@@ -6,6 +6,8 @@ bases:
 - ../../base
 patches:
 - deployment.yaml
+- service.yaml
+- alertmanager-service.yaml
 - clusterRole.yaml
 configMapGenerator:
 - name: prometheus-server-config
