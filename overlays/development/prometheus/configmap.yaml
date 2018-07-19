@@ -19,7 +19,7 @@ data:
       alertmanagers:
       - static_configs:
         - targets:
-          - development-prometheus.development-monitoring.svc.cluster.local:9093 # NOTE: manual patch
+          - development-alertmanager.development-monitoring.svc.cluster.local:9093 # NOTE: manual patch
 
     # NOTE: Don't want to manage the following configurations in overlay as exactly same as base.
     # Ref. https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml
