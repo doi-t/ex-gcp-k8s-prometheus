@@ -8,7 +8,8 @@ resources:
 - namespace.yaml
 - clusterRole.yaml
 - alertmanager.yaml
-# - alertmanager-service.yaml
+- alertmanager-service.yaml
+- alertmanager-config.yaml
 configMapGenerator:
 - name: prometheus-server-config
   behavior: merge
