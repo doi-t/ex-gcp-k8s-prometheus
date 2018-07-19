@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-rule-config
+  labels:
+    name: prometheus-rule-config
+data:
+  prometheus-rules.yaml: |-
+    groups:
+    - name: InstanceDown
+      rules:
+      - alert: InstanceDown
+        expr: up == 0
+        for: 1m

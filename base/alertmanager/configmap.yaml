@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  labels:
+    name: alertmanager-config
+data:
+  alertmanager.yaml: |-
+    global:
+      slack_api_url: 'https://hooks.slack.com/services/xxxxxxxxx/xxxxxxxxx/xxxxxxxxxxxxxxxxxxxxxxxx' # TODO: kustomize: patch actual webhook url shomehow
+
+    route:
+      receiver: 'slack-notifications'
+
+    receivers:
+    - name: 'slack-notifications'
+      slack_configs:
+      - channel: '#test'
+        text: 'test alert from local: {{ .GroupLabels.app }}, {{ .GroupLabels.alertname }}'

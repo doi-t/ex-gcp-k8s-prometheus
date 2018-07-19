@@ -2,13 +2,15 @@ namespace: monitoring
 commonLabels:
   app: monitoring
 resources:
-- deployment.yaml
-- service.yaml
-- configmap.yaml
 - namespace.yaml
-- clusterRole.yaml
-- alertmanager.yaml
-# - alertmanager-service.yaml
+- prometheus/deployment.yaml
+- prometheus/service.yaml
+- prometheus/configmap.yaml
+- prometheus/configmap-rule.yaml
+- prometheus/clusterRole.yaml
+- alertmanager/deployment.yaml
+- alertmanager/service.yaml
+- alertmanager/configmap.yaml
 configMapGenerator:
 - name: prometheus-server-config
   behavior: merge

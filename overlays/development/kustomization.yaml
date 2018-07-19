@@ -1,12 +1,13 @@
-namespace: dev-monitoring
-namePrefix: dev-
+namespace: development-monitoring
+namePrefix: development-
 commonLabels:
   variant: development
 bases:
 - ../../base
 patches:
-- deployment.yaml
-- clusterRole.yaml
+- prometheus/deployment.yaml
+- prometheus/configmap.yaml
+- prometheus/clusterRole.yaml
 configMapGenerator:
 - name: prometheus-server-config
   behavior: merge
