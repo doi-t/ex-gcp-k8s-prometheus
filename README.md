@@ -11,67 +11,28 @@ Ref. https://cloud.google.com/kubernetes-engine/docs/how-to/role-based-access-co
 TODO: make it yaml configuration if it is possible.
 
 ## Deploy Promethus Server to GKE
-### Deploy Development Environment
-```
-kustomize build overlays/dev | kubectl apply -f -
-```
-### Deploy Staging Environment
-```
-kustomize build overlays/stg | kubectl apply -f -
-```
-
-## Debugging and Understanding What is Happening on k8s/GKE
-The following commands sometimes expect `NAMESPACE` and `ENVIRONMENT` variables.
-
-#### Development Environment
-- `NAMESPACE=dev-monitoring`
-- `ENVIRONMENT=development`
-
-#### Staging Environment
-- `NAMESPACE=stg-monitoring`
-- `ENVIRONMENT=staging`
-
-### Check Rsources
-```
-kubectl get pods,deployments,services,configmaps,persistentvolumeclaim,storageclass,namespaces,serviceaccount --show-labels --namespace ${NAMESPACE}
-```
-
-### Observe Rolling Update during the Deployment
-Run the following command before `kubectl apply` to observe how kubernetes detects new configurations and does [rolling update](https://github.com/kubernetes-sigs/kustomize/tree/master/examples/helloWorld#rolling-updates)).
-```
-watch -n 5 'kubectl get pods,deployments,services,configmaps,persistentvolumeclaim,storageclass,namespaces,serviceaccount --show-labels --namespace dev-monitoring'
-```
+[Rolling updates with new configMap name](https://github.com/kubernetes-sigs/kustomize/tree/master/examples/helloWorld#rolling-updates) will happen.
 
 MEMO: Recreating Prometheus server pod with rolling update for every single config update would cause "holes" in time series metrics as a discussion in https://github.com/kubernetes-sigs/kustomize/issues/50.
 
-### Access Promethus/Alertmanager Dashboard
+### Deploy Development Environment
 ```
-PROMETHEUS_POD_NAME=$(kubectl get pods --namespace ${NAMESPACE} -l "name=prometheus,variant=${ENVIRONMENT}" -o jsonpath="{.items[0].metadata.name}") && \
-echo $PROMETHEUS_POD_NAME
-```
-
-#### Prometheus
-```
-kubectl port-forward ${PROMETHEUS_POD_NAME} 9090:9090 --namespace ${NAMESPACE}
+make ENVIRONMENT=development apply
 ```
 
-#### Alertmanager
+### Deploy Staging Environment
 ```
-kubectl port-forward ${PROMETHEUS_POD_NAME} 9093:9093 --namespace ${NAMESPACE}
-```
-
-### Check Prometheus Server Logs
-```
-brew install stern
-stern prometheus --namespace ${NAMESPACE}
+make ENVIRONMENT=staging apply
 ```
 
-### Check CPU/Memory Requests and Limits
+## Destroy Promethus Server to GKE
+
+### Destroy Development Environment
 ```
-kubectl describe nodes
+make ENVIRONMENT=development destroy
 ```
 
-### Check Actual Resource Usage
+### Destroy Staging Environment
 ```
-kubectl top pod --namespace ${NAMESPACE}
+make ENVIRONMENT=staging destroy
 ```
