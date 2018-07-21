@@ -27,6 +27,9 @@ tail-alertmanager:
 describe-nodes:
 	kubectl describe nodes
 
+events:
+	kubectl get events --namespace $(ENVIRONMENT)-monitoring
+
 top:
 	kubectl top pod --namespace $(ENVIRONMENT)-monitoring
 
