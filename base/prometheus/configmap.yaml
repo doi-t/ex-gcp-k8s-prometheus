@@ -19,7 +19,7 @@ data:
       alertmanagers:
       - static_configs:
         - targets:
-          - localhost:9093 # TODO: kustomize: patch fqdn with [pod name].[namespace].svc.cluster.local:9093 in each overlay
+          - localhost:9093 # TODO: kustomize: patch fqdn with [my-svc].[my-namespace].svc.cluster.local:9093 in each overlay
 
     # Ref. https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml
     scrape_configs:
